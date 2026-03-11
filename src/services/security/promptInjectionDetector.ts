@@ -203,6 +203,7 @@ class PromptInjectionDetector {
           hidden_text: { score: 0, matches: [] },
           data_exfiltration: { score: 0, matches: [] },
           encoding_obfuscation: { score: 0, matches: [] },
+          output_specification: { score: 0, matches: [] },
         },
         summary: 'Prompt injection detector disabled',
         reason_codes: ['detector_disabled'],
