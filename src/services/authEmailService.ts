@@ -1,7 +1,7 @@
 import resend from './resendClient';
 
 const APP_NAME = process.env.APP_NAME || 'Commune';
-const EMAIL_FROM = process.env.AUTH_EMAIL_FROM || process.env.DEFAULT_FROM_EMAIL || 'no-reply@commune.ai';
+const EMAIL_FROM = process.env.AUTH_EMAIL_FROM || process.env.DEFAULT_FROM_EMAIL || 'no-reply@commune.email';
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
 
 export const sendVerificationEmail = async ({ to, token }: { to: string; token: string }) => {

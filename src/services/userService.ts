@@ -25,7 +25,7 @@ const sendEmail = async (payload: {
 }) => {
   const resend = await import('./resendClient');
   const { data, error } = await resend.default.emails.send({
-    from: process.env.DEFAULT_FROM_EMAIL || 'noreply@commune.ai',
+    from: process.env.DEFAULT_FROM_EMAIL || 'noreply@commune.email',
     to: payload.to,
     subject: payload.subject,
     html: payload.html,
