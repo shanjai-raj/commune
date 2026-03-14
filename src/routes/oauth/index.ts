@@ -26,6 +26,7 @@ import { Router, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { OAuthClientStore } from '../../stores/oauthClientStore';
 import { OAuthService } from '../../services/oauthService';
+import { combinedAuth } from '../../middleware/combinedAuth';
 import { jwtAuth } from '../../middleware/jwtAuth';
 import logger from '../../utils/logger';
 
@@ -126,7 +127,7 @@ async function requireClientAuth(req: any, res: Response, next: () => void): Pro
  *   client_secret — Secret key (store securely, shown ONCE, never retrievable)
  *   ...client metadata
  */
-router.post('/clients', jwtAuth, registerClientLimiter, async (req: any, res: Response) => {
+router.post('/clients', combinedAuth, registerClientLimiter, async (req: any, res: Response) => {
   const { name, description, websiteUrl, logoUrl } = req.body;
 
   if (!name || typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 100) {
@@ -148,7 +149,8 @@ router.post('/clients', jwtAuth, registerClientLimiter, async (req: any, res: Re
     }
   }
 
-  const orgId = req.user?.orgId;
+  // Accept orgId from API key auth (req.orgId) or JWT session (req.user.orgId)
+  const orgId = req.orgId || req.user?.orgId;
   if (!orgId) {
     return res.status(401).json({ error: 'unauthorized', message: 'Could not resolve organization from session' });
   }
@@ -195,8 +197,8 @@ router.post('/clients', jwtAuth, registerClientLimiter, async (req: any, res: Re
  *
  * List all OAuth clients registered by the authenticated integrator's org.
  */
-router.get('/clients', jwtAuth, async (req: any, res: Response) => {
-  const orgId = req.user?.orgId;
+router.get('/clients', combinedAuth, async (req: any, res: Response) => {
+  const orgId = req.orgId || req.user?.orgId;
   if (!orgId) {
     return res.status(401).json({ error: 'unauthorized', message: 'Not authenticated' });
   }
@@ -227,8 +229,8 @@ router.get('/clients', jwtAuth, async (req: any, res: Response) => {
  *
  * Revoke an OAuth client registration.
  */
-router.delete('/clients/:clientId', jwtAuth, async (req: any, res: Response) => {
-  const orgId = req.user?.orgId;
+router.delete('/clients/:clientId', combinedAuth, async (req: any, res: Response) => {
+  const orgId = req.orgId || req.user?.orgId;
   if (!orgId) {
     return res.status(401).json({ error: 'unauthorized', message: 'Not authenticated' });
   }
