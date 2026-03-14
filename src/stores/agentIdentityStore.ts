@@ -35,7 +35,7 @@ export class AgentIdentityStore {
     if (!collection) return null;
     const identity = await collection.findOne(
       { id, status: 'active' },
-      { projection: { id: 1, publicKey: 1, orgId: 1, status: 1, agentEmail: 1 } }
+      { projection: { id: 1, publicKey: 1, orgId: 1, status: 1, agentEmail: 1, inboxEmail: 1, agentName: 1, agentPurpose: 1, createdAt: 1, lastUsedAt: 1 } }
     );
 
     if (identity) {
